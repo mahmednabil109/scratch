@@ -3,6 +3,7 @@ languageCode = 'en-us'
 title = 'Scratch'
 theme = 'paper'
 
+googleAnalytics = "G-BZ5JB99WMN"
 googlefonts = ["Droid Sans", "Fira Mono"]
 fontbody = 'Droid Sans'
 fontcode = 'Fira Mono'
