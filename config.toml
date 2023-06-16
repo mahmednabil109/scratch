@@ -1,12 +1,12 @@
-baseURL = 'http://example.org/'
+baseURL = 'https://mahmednabil109.github.io/scratch/'
+absURL = 'https://mahmednabil109.github.io/scratch/'
 languageCode = 'en-us'
 title = 'Scratch'
 theme = 'paper'
 
 googleAnalytics = "G-BZ5JB99WMN"
-googlefonts = ["Droid Sans", "Fira Mono"]
-fontbody = 'Droid Sans'
-fontcode = 'Fira Mono'
+# canonifyURLs = true
+
 
 [params]
   # color style
