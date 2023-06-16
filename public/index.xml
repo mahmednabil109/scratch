@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Scratch</title>
+    <link>http://example.org/</link>
+    <description>Recent content on Scratch</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 16 Jun 2023 21:40:48 +0300</lastBuildDate><atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>🕹️ I/O Models </title>
+      <link>http://example.org/posts/io-models/</link>
+      <pubDate>Fri, 16 Jun 2023 21:40:48 +0300</pubDate>
+      
+      <guid>http://example.org/posts/io-models/</guid>
+      <description>🎤🎤 Most CS challenges are actually boring !!.
+What is an I/O operation? Well, any code running on a modern CPU is either executing normal instructions (arithmetic operations, moving around memory, etc) or an I/O instruction which is to communicate with external (off-cpu) peripherals like Network interfaces, USB controllers, etc. This communication is much slower than other operations and it&amp;rsquo;s often done through buffers in order for other device interfaces to keep up with the CPU.</description>
+    </item>
+    
+  </channel>
+</rss>

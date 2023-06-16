@@ -1,0 +1,34 @@
+baseURL = 'http://example.org/'
+languageCode = 'en-us'
+title = 'Scratch'
+theme = 'paper'
+
+googlefonts = ["Droid Sans", "Fira Mono"]
+fontbody = 'Droid Sans'
+fontcode = 'Fira Mono'
+
+[params]
+  # color style
+  color = 'linen'                           # linen, wheat, gray, light
+
+  # header social icons
+  twitter = 'mahmed0x109'            
+  github = 'mahmednabil109'
+  linkedin = 'mahmed-nabil-452383140'
+  rss = true                                # show rss icon
+
+  # home page profile
+  avatar = 'https://avatars.githubusercontent.com/u/61705839?s=400&u=58f3f12c1a4ae845f4f1c353e07f0014e3cf0202&v=4'
+  name = 'Mohamed Abokammer'
+  bio = 'None'
+
+
+  # misc
+  disableHLJS = false                        # disable highlight.js
+  monoDarkIcon = true                       # show monochrome dark mode icon
+  math = true                               # enable KaTex math typesetting globally
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
