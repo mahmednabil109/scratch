@@ -9,6 +9,8 @@ googleAnalytics = "G-BZ5JB99WMN"
 
 
 [params]
+  description = "My personal dump of thoughts aka blog"
+
   # color style
   color = 'linen'                           # linen, wheat, gray, light
 
@@ -33,3 +35,8 @@ googleAnalytics = "G-BZ5JB99WMN"
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true
+
+
+[taxonomies]
+  posts = 'posts'
+  tag = 'tags'

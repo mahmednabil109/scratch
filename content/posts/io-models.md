@@ -2,6 +2,9 @@
 title: "🕹️ I/O Models "
 date: 2023-06-16T21:40:48+03:00
 draft: false
+# tags:
+# - Notes
+# - I/O
 ---
 
 
