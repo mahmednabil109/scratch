@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html
+  class="not-ready text-sm lg:text-base"
+  style="--bg: #faf6f1"
+  lang="en-us"
+>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, shrink-to-fit=no"
+  />
+
+  
+  <title>🕸️ Facebook 2.0 - Scratch</title>
+
+  
+  <meta name="theme-color" />
+
+  
+  
+  
+  <meta name="description" content="Once while I was wondering why we exist during solving my final exam, I read an interesting question - which is an unlikely event to occur - it was a software architecture design question saying (not a word-to-word quoting):
+If we want to design a fully distributed version of Facebook, that is instead of having a ~30k server farm to run the different services, we want to design a P2P distributed architecture modeling each user phone as a node in the P2P network instead of the server farm." />
+  <meta name="author" content="Mohamed Abokammer" />
+  
+
+  <meta property="og:image" content="https://mahmednabil109.github.io/scratch/imgs/net.jpg" />
+  
+  
+  
+  
+  
+  
+  <link rel="preload stylesheet" as="style" href="https://mahmednabil109.github.io/scratch/main.min.css" />
+
+  
+  <script
+    defer
+    src="https://mahmednabil109.github.io/scratch/highlight.min.js"
+    onload="hljs.initHighlightingOnLoad();"
+  ></script>
+  
+
+  
+     
+  <link rel="preload" as="image" href="https://mahmednabil109.github.io/scratch/theme.png" />
+
+  
+  
+  
+  <link rel="preload" as="image" href="https://avatars.githubusercontent.com/u/61705839?s=400&amp;u=58f3f12c1a4ae845f4f1c353e07f0014e3cf0202&amp;v=4" />
+  
+  
+
+  
+  <link rel="preload" as="image" href="https://mahmednabil109.github.io/scratch/twitter.svg" />
+  
+  <link rel="preload" as="image" href="https://mahmednabil109.github.io/scratch/github.svg" />
+  
+  <link rel="preload" as="image" href="https://mahmednabil109.github.io/scratch/linkedin.svg" />
+  
+  <link rel="preload" as="image" href="https://mahmednabil109.github.io/scratch/rss.svg" />
+  
+  
+
+  
+  
+  <link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.css"
+  integrity="sha384-3UiQGuEI4TTMaFmGIZumfRPtfKQ3trwQE2JgosJxCnGmQpL/lJdjpcHkaaFwHlcI"
+  crossorigin="anonymous"
+/>
+<script
+  defer
+  src="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.js"
+  integrity="sha384-G0zcxDFp5LWZtDuRMnBkk3EphCK1lhEf4UEyEM693ka574TZGwo4IWwS6QLzM/2t"
+  crossorigin="anonymous"
+></script>
+<script
+  defer
+  src="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/contrib/auto-render.min.js"
+  integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05"
+  crossorigin="anonymous"
+  onload="renderMathInElement(document.body);"
+></script>
+
+  
+  
+  
+
+  
+  <link rel="icon" href="https://mahmednabil109.github.io/scratch/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://mahmednabil109.github.io/scratch/apple-touch-icon.png" />
+
+  
+  <meta name="generator" content="Hugo 0.111.3">
+
+  
+  
+
+  
+  
+  
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'G-BZ5JB99WMN', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  
+  
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BZ5JB99WMN"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-BZ5JB99WMN', { 'anonymize_ip': false });
+}
+</script>
+
+  
+  <meta property="og:title" content="🕸️ Facebook 2.0" />
+<meta property="og:description" content="Once while I was wondering why we exist during solving my final exam, I read an interesting question - which is an unlikely event to occur - it was a software architecture design question saying (not a word-to-word quoting):
+If we want to design a fully distributed version of Facebook, that is instead of having a ~30k server farm to run the different services, we want to design a P2P distributed architecture modeling each user phone as a node in the P2P network instead of the server farm." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://mahmednabil109.github.io/scratch/posts/distributed-fb/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-06-17T04:18:10+03:00" />
+<meta property="article:modified_time" content="2023-06-17T04:18:10+03:00" />
+
+  
+  <meta itemprop="name" content="🕸️ Facebook 2.0">
+<meta itemprop="description" content="Once while I was wondering why we exist during solving my final exam, I read an interesting question - which is an unlikely event to occur - it was a software architecture design question saying (not a word-to-word quoting):
+If we want to design a fully distributed version of Facebook, that is instead of having a ~30k server farm to run the different services, we want to design a P2P distributed architecture modeling each user phone as a node in the P2P network instead of the server farm."><meta itemprop="datePublished" content="2023-06-17T04:18:10+03:00" />
+<meta itemprop="dateModified" content="2023-06-17T04:18:10+03:00" />
+<meta itemprop="wordCount" content="1038">
+<meta itemprop="keywords" content="" />
+  
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="🕸️ Facebook 2.0"/>
+<meta name="twitter:description" content="Once while I was wondering why we exist during solving my final exam, I read an interesting question - which is an unlikely event to occur - it was a software architecture design question saying (not a word-to-word quoting):
+If we want to design a fully distributed version of Facebook, that is instead of having a ~30k server farm to run the different services, we want to design a P2P distributed architecture modeling each user phone as a node in the P2P network instead of the server farm."/>
+
+  
+  
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header class="mx-auto flex h-[5rem] max-w-3xl px-8 lg:justify-center">
+  <div class="relative z-50 mr-auto flex items-center">
+    <a
+      class="-translate-x-[1px] -translate-y-[1px] text-2xl font-semibold"
+      href="https://mahmednabil109.github.io/scratch/"
+      >Scratch</a
+    >
+    <div
+      class="btn-dark text-[0] ml-4 h-6 w-6 shrink-0 cursor-pointer [background:url(./theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+      role="button"
+      aria-label="Dark"
+    ></div>
+  </div>
+
+  <div
+    class="btn-menu relative z-50 -mr-8 flex h-[5rem] w-[5rem] shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+    role="button"
+    aria-label="Menu"
+  ></div>
+
+  
+  <script>
+    
+    const htmlClass = document.documentElement.classList;
+    setTimeout(() => {
+      htmlClass.remove('not-ready');
+    }, 10);
+
+    
+    const btnMenu = document.querySelector('.btn-menu');
+    btnMenu.addEventListener('click', () => {
+      htmlClass.toggle('open');
+    });
+
+    
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    const lightBg = `"#faf6f1"`.replace(/"/g, '');
+    const setDark = (isDark) => {
+      metaTheme.setAttribute('content', isDark ? '#000' : lightBg);
+      htmlClass[isDark ? 'add' : 'remove']('dark');
+      localStorage.setItem('dark', isDark);
+    };
+
+    
+    const darkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    if (htmlClass.contains('dark')) {
+      setDark(true);
+    } else {
+      const darkVal = localStorage.getItem('dark');
+      setDark(darkVal ? darkVal === 'true' : darkScheme.matches);
+    }
+
+    
+    darkScheme.addEventListener('change', (event) => {
+      setDark(event.matches);
+    });
+
+    
+    const btnDark = document.querySelector('.btn-dark');
+    btnDark.addEventListener('click', () => {
+      setDark(localStorage.getItem('dark') !== 'true');
+    });
+  </script>
+
+  <div
+    class="nav-wrapper fixed inset-x-0 top-full z-40 flex h-full select-none flex-col justify-center pb-16 duration-200 dark:bg-black lg:static lg:h-auto lg:flex-row lg:!bg-transparent lg:pb-0 lg:transition-none"
+  >
+    
+    
+
+    
+    <nav
+      class="mt-12 flex justify-center space-x-10 dark:invert lg:ml-12 lg:mt-0 lg:items-center lg:space-x-6"
+    >
+      
+      <a
+        class="h-8 w-8 text-[0] [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6"
+        style="--url: url(./twitter.svg)"
+        href="https://twitter.com/mahmed0x109"
+        target="_blank"
+        rel="me"
+      >
+        twitter
+      </a>
+      
+      <a
+        class="h-8 w-8 text-[0] [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6"
+        style="--url: url(./github.svg)"
+        href="https://github.com/mahmednabil109"
+        target="_blank"
+        rel="me"
+      >
+        github
+      </a>
+      
+      <a
+        class="h-8 w-8 text-[0] [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6"
+        style="--url: url(./linkedin.svg)"
+        href="https://linkedin.com/in/mahmed-nabil-452383140"
+        target="_blank"
+        rel="me"
+      >
+        linkedin
+      </a>
+      
+      <a
+        class="h-8 w-8 text-[0] [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6"
+        style="--url: url(./rss.svg)"
+        href="https://mahmednabil109.github.io/scratch/index.xml"
+        target="_blank"
+        rel="alternate"
+      >
+        rss
+      </a>
+      
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-10rem)] max-w-3xl px-8 pb-24 pt-16 dark:prose-invert"
+    >
+      
+
+<article>
+  <header class="mb-20">
+    <h1 class="!my-0 pb-2.5">🕸️ Facebook 2.0</h1>
+
+    
+    <div class="text-sm opacity-60">
+      
+      <time>Jun 17, 2023</time>
+      
+      
+      
+      
+    </div>
+    
+  </header>
+
+  <section><p>Once while I was wondering why we exist during solving my final exam, I read an interesting question - which is an unlikely event to occur - it was a software architecture design question saying (not a word-to-word quoting):</p>
+<blockquote>
+<p>If we want to design a fully distributed version of Facebook, that is instead of having a ~30k server farm to run the different services, we want to design a P2P distributed architecture modeling each user phone as a node in the P2P network instead of the server farm.</p>
+</blockquote>
+<p>The question also suggested using a <a href="https://en.wikipedia.org/wiki/Distributed_hash_table"><strong>Distributed Hash Table (DHT)</strong></a> to model the distributed network and only asked to propose a design to implement the <em>registration/login</em> &amp; <em>create/view posts</em> (wall app in Facebook) services. Next, I will discuss how I approached this design question and I will follow my thinking process back then so there might be very naive approaches 😅.</p>
+<h2 id="distributed-hash-table">Distributed Hash Table</h2>
+<p>From the name, we can guess what a DHT is. Basically, it&rsquo;s a distributed data structure meaning it lives across different nodes/machines and it supports two operations storing a key-value pair and given a key retrieve its corresponding value. The aim of the different DHT designs is to store a huge amount of data that one single machine can&rsquo;t handle while supporting the characteristics of any distributed datastore which are: Scalability, Reliability, Fault Tolerance, and Performance. The first DHT that came to my mind was <a href="https://pdos.csail.mit.edu/papers/chord:sigcomm01/chord_sigcomm.pdf"><strong>Chord</strong></a>. Chord is a very efficient and well-designed DHT, it utilizes consistent hashing and circular id space to structure the network of nodes in a way that enables <em>O(log(N))</em> retrieval of any data, <em>N</em> here represents the number of the nodes in the network. It&rsquo;s also resilient in the presence of churn (churn happens when there are some nodes joining and leaving the network in a random manner) thanks to its stabilization algorithm. This isn&rsquo;t a post about how Chord work, but you can read the <a href="https://pdos.csail.mit.edu/papers/chord:sigcomm01/chord_sigcomm.pdf"><strong>paper</strong></a> for more in-depth design details.</p>
+<h2 id="-registrationlogin">🔑 Registration/Login</h2>
+<p>Registration can be done as a broadcast operation, where each new user sends his/her registration information to all the nodes in the network to store it and use it later for authentication. Note that this is a broadcast operation, not a simple store operation, we will discuss why later.</p>
+<p>Then to model Logging in, the network needs to agree on the validity of given login data so to achieve that we can use <a href="https://en.wikipedia.org/wiki/Consensus_(computer_science)"><strong>Consensus Protocols</strong></a> the proof here would be the password (or any unique data that other nodes can verify) and the consensus could be done with the majority voting <em>(we can get very creative here - and avoid all of the security issues that probably came to your mind right now - and use <a href="https://en.wikipedia.org/wiki/Zero-knowledge_proof"><strong>Zero-knowledge proof</strong></a>)</em></p>
+<p>But this approach is very dumb - probably as you are currently thinking - and that&rsquo;s at least for the following three reasons:</p>
+<ol>
+<li>Each node in the network will store each other user information, meaning it has a full copy of the login &amp; registration database, which is not scalable.</li>
+<li>In order for a user to log in, we need the consent of at least 51% of the network to verify his/her login info, and that is very slow (this is not the case for other consensus protocols).</li>
+<li>The killer issue is if we tried to think about what P2P means, we will see that there is no notion of privately stored data, all data is by definition accessible to all peers so storing passwords and verifying their hash prove nothing, we need another way to model authentication.</li>
+</ol>
+<p>To solve the killer issue, we need to go one step up in the semantics layer, why do we need to implement login and registration? the answer would be that we need to identify users in our system in order to authorize actions taken! So what about authorizing each user by having each user compute a hash of (public IP, local port, some nonce) using <strong>SHA-1</strong> for example, and use this hash as an <em>ID</em> to join Chord network (info: chord identifies different machines by 128-bit id in the id space &ldquo;Ring&rdquo;). By implementing this simple approach we don&rsquo;t even need the registration as each node identifies itself with a unique hash.</p>
+<h2 id="-wall-app">🗞️ Wall App</h2>
+<p>Creating new posts is very straightforward, we can model it as storing a key (128-bit UUID of the post) and value (post itself) in the network. This can be done using the store algorithm of Chord (<a href="https://pdos.csail.mit.edu/papers/chord:sigcomm01/chord_sigcomm.pdf">see paper</a>).</p>
+<p>But implementing the Wall feed itself is a bit tricky. We can go the naive way and generate some random 128-bit hashes and retrieve the posts corresponding to these hashes (or the nearest post if one does not exist) but that would be considered lazy and does not fully implement the recommendation features of the wall service.</p>
+<blockquote>
+<p>Note: Chord works by mapping both nodes and keys (from key-value pairs) to the same circular space, and then each node is responsible for all the pairs whose keys follow the node till the next node in the Ring, <strong>but</strong> there are other DHTs that uses a cartesian space as a way to model nodes and keys.</p>
+</blockquote>
+<p>Trying to satisfy these constraints of getting a feed that is actually relevant would require a bit of knowledge about machine learning, and also implementing a distributed recommendation system. My proposal was first we need to use some pre-trained neural network model and by using <a href="https://en.wikipedia.org/wiki/Transfer_learning"><strong>transfer learning</strong></a> trick we can use the last but one layer as an embedding vector that represents the post in the features space. Then we need to maintain another d-dimensional cartesian space based DHT like <a href="http://conferences.sigcomm.org/sigcomm/2001/p13-ratnasamy.pdf"><strong>CAN</strong></a> to store post embeddings generated by the ML model. The last thing we need to have is some embedding vector that represents user interests (could be calculated based on his own posts, reacted-with-posts, friends-posts, etc.) and by using this vector to search for the nearest-K neighbors in the CAN network we have implemented the feed with distributed recommendation system 🎉.</p>
+<blockquote>
+<p>Disclaimer: things here could be hardly implementable or not applicable at all, but if you feel that there are some things that are overly stupid and/or wrong feel free to contact me 👍.</p>
+</blockquote>
+</section>
+
+  
+  
+
+  
+  
+  
+  <nav class="mt-24 flex rounded-lg bg-black/[3%] text-lg dark:bg-white/[8%]">
+    
+    <a
+      class="flex w-1/2 items-center rounded-l-md p-6 pr-3 no-underline hover:bg-black/[2%] dark:hover:bg-white/[3%]"
+      href="https://mahmednabil109.github.io/scratch/posts/smart_pointers/"
+      ><span class="mr-1.5">←</span><span>🧪 Smart Pointers (distilled)</span></a
+    >
+    
+    
+    <a
+      class="ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 no-underline hover:bg-black/[2%] dark:hover:bg-white/[3%]"
+      href="https://mahmednabil109.github.io/scratch/posts/io-models/"
+      ><span>🕹️ I/O Models </span><span class="ml-1.5">→</span></a
+    >
+    
+  </nav>
+  
+
+  
+  
+
+  
+  
+</article>
+
+
+    </main>
+
+    <footer
+  class="opaco mx-auto flex h-[5rem] max-w-3xl items-center px-8 text-[0.9em] opacity-60"
+>
+  <div class="mr-auto">
+    &copy; 2023
+    <a class="link" href="https://mahmednabil109.github.io/scratch/">Scratch</a>
+  </div>
+  <a class="link mx-6" href="https://gohugo.io/" rel="noopener" target="_blank"
+    >Powered by Hugo️️</a
+  >️
+  <a
+    class="link"
+    href="https://github.com/nanxiaobei/hugo-paper"
+    rel="noopener"
+    target="_blank"
+    >Theme Paper</a
+  >
+</footer>
+
+  </body>
+</html>

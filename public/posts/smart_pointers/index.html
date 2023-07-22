@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html
+  class="not-ready text-sm lg:text-base"
+  style="--bg: #faf6f1"
+  lang="en-us"
+>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, shrink-to-fit=no"
+  />
+
+  
+  <title>🧪 Smart Pointers (distilled) - Scratch</title>
+
+  
+  <meta name="theme-color" />
+
+  
+  
+  
+  <meta name="description" content="Programming mostly in garbage-collected languages (java, python, etc.), there are a lot of things that I took for granted - if I even knew about them -. These things came to hunt me when trying none garbage-collected languages like C&#43;&#43;, rust, etc (especially rust). Most of the issues are related to resource management and the main resource that causes problems is memory. To avoid such hassle there are patterns developed to safely and efficiently manage memory and other resources." />
+  <meta name="author" content="Mohamed Abokammer" />
+  
+
+  <meta property="og:image" content="https://mahmednabil109.github.io/scratch/imgs/mleak.png" />
+  
+  
+  
+  
+  
+  
+  <link rel="preload stylesheet" as="style" href="https://mahmednabil109.github.io/scratch/main.min.css" />
+
+  
+  <script
+    defer
+    src="https://mahmednabil109.github.io/scratch/highlight.min.js"
+    onload="hljs.initHighlightingOnLoad();"
+  ></script>
+  
+
+  
+     
+  <link rel="preload" as="image" href="https://mahmednabil109.github.io/scratch/theme.png" />
+
+  
+  
+  
+  <link rel="preload" as="image" href="https://avatars.githubusercontent.com/u/61705839?s=400&amp;u=58f3f12c1a4ae845f4f1c353e07f0014e3cf0202&amp;v=4" />
+  
+  
+
+  
+  <link rel="preload" as="image" href="https://mahmednabil109.github.io/scratch/twitter.svg" />
+  
+  <link rel="preload" as="image" href="https://mahmednabil109.github.io/scratch/github.svg" />
+  
+  <link rel="preload" as="image" href="https://mahmednabil109.github.io/scratch/linkedin.svg" />
+  
+  <link rel="preload" as="image" href="https://mahmednabil109.github.io/scratch/rss.svg" />
+  
+  
+
+  
+  
+  <link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.css"
+  integrity="sha384-3UiQGuEI4TTMaFmGIZumfRPtfKQ3trwQE2JgosJxCnGmQpL/lJdjpcHkaaFwHlcI"
+  crossorigin="anonymous"
+/>
+<script
+  defer
+  src="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.js"
+  integrity="sha384-G0zcxDFp5LWZtDuRMnBkk3EphCK1lhEf4UEyEM693ka574TZGwo4IWwS6QLzM/2t"
+  crossorigin="anonymous"
+></script>
+<script
+  defer
+  src="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/contrib/auto-render.min.js"
+  integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05"
+  crossorigin="anonymous"
+  onload="renderMathInElement(document.body);"
+></script>
+
+  
+  
+  
+
+  
+  <link rel="icon" href="https://mahmednabil109.github.io/scratch/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://mahmednabil109.github.io/scratch/apple-touch-icon.png" />
+
+  
+  <meta name="generator" content="Hugo 0.111.3">
+
+  
+  
+
+  
+  
+  
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'G-BZ5JB99WMN', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  
+  
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BZ5JB99WMN"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-BZ5JB99WMN', { 'anonymize_ip': false });
+}
+</script>
+
+  
+  <meta property="og:title" content="🧪 Smart Pointers (distilled)" />
+<meta property="og:description" content="Background Programming mostly in garbage-collected languages (java, python, etc.), there are a lot of things that I took for granted - if I even knew about them -. These things came to hunt me when trying none garbage-collected languages like C&#43;&#43;, rust, etc (especially rust). Most of the issues are related to resource management and the main resource that causes problems is memory. To avoid such hassle there are patterns developed to safely and efficiently manage memory and other resources." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://mahmednabil109.github.io/scratch/posts/smart_pointers/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-07-20T15:08:25+03:00" />
+<meta property="article:modified_time" content="2023-07-20T15:08:25+03:00" />
+
+  
+  <meta itemprop="name" content="🧪 Smart Pointers (distilled)">
+<meta itemprop="description" content="Background Programming mostly in garbage-collected languages (java, python, etc.), there are a lot of things that I took for granted - if I even knew about them -. These things came to hunt me when trying none garbage-collected languages like C&#43;&#43;, rust, etc (especially rust). Most of the issues are related to resource management and the main resource that causes problems is memory. To avoid such hassle there are patterns developed to safely and efficiently manage memory and other resources."><meta itemprop="datePublished" content="2023-07-20T15:08:25+03:00" />
+<meta itemprop="dateModified" content="2023-07-20T15:08:25+03:00" />
+<meta itemprop="wordCount" content="1835">
+<meta itemprop="keywords" content="" />
+  
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="🧪 Smart Pointers (distilled)"/>
+<meta name="twitter:description" content="Background Programming mostly in garbage-collected languages (java, python, etc.), there are a lot of things that I took for granted - if I even knew about them -. These things came to hunt me when trying none garbage-collected languages like C&#43;&#43;, rust, etc (especially rust). Most of the issues are related to resource management and the main resource that causes problems is memory. To avoid such hassle there are patterns developed to safely and efficiently manage memory and other resources."/>
+
+  
+  
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header class="mx-auto flex h-[5rem] max-w-3xl px-8 lg:justify-center">
+  <div class="relative z-50 mr-auto flex items-center">
+    <a
+      class="-translate-x-[1px] -translate-y-[1px] text-2xl font-semibold"
+      href="https://mahmednabil109.github.io/scratch/"
+      >Scratch</a
+    >
+    <div
+      class="btn-dark text-[0] ml-4 h-6 w-6 shrink-0 cursor-pointer [background:url(./theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+      role="button"
+      aria-label="Dark"
+    ></div>
+  </div>
+
+  <div
+    class="btn-menu relative z-50 -mr-8 flex h-[5rem] w-[5rem] shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+    role="button"
+    aria-label="Menu"
+  ></div>
+
+  
+  <script>
+    
+    const htmlClass = document.documentElement.classList;
+    setTimeout(() => {
+      htmlClass.remove('not-ready');
+    }, 10);
+
+    
+    const btnMenu = document.querySelector('.btn-menu');
+    btnMenu.addEventListener('click', () => {
+      htmlClass.toggle('open');
+    });
+
+    
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    const lightBg = `"#faf6f1"`.replace(/"/g, '');
+    const setDark = (isDark) => {
+      metaTheme.setAttribute('content', isDark ? '#000' : lightBg);
+      htmlClass[isDark ? 'add' : 'remove']('dark');
+      localStorage.setItem('dark', isDark);
+    };
+
+    
+    const darkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    if (htmlClass.contains('dark')) {
+      setDark(true);
+    } else {
+      const darkVal = localStorage.getItem('dark');
+      setDark(darkVal ? darkVal === 'true' : darkScheme.matches);
+    }
+
+    
+    darkScheme.addEventListener('change', (event) => {
+      setDark(event.matches);
+    });
+
+    
+    const btnDark = document.querySelector('.btn-dark');
+    btnDark.addEventListener('click', () => {
+      setDark(localStorage.getItem('dark') !== 'true');
+    });
+  </script>
+
+  <div
+    class="nav-wrapper fixed inset-x-0 top-full z-40 flex h-full select-none flex-col justify-center pb-16 duration-200 dark:bg-black lg:static lg:h-auto lg:flex-row lg:!bg-transparent lg:pb-0 lg:transition-none"
+  >
+    
+    
+
+    
+    <nav
+      class="mt-12 flex justify-center space-x-10 dark:invert lg:ml-12 lg:mt-0 lg:items-center lg:space-x-6"
+    >
+      
+      <a
+        class="h-8 w-8 text-[0] [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6"
+        style="--url: url(./twitter.svg)"
+        href="https://twitter.com/mahmed0x109"
+        target="_blank"
+        rel="me"
+      >
+        twitter
+      </a>
+      
+      <a
+        class="h-8 w-8 text-[0] [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6"
+        style="--url: url(./github.svg)"
+        href="https://github.com/mahmednabil109"
+        target="_blank"
+        rel="me"
+      >
+        github
+      </a>
+      
+      <a
+        class="h-8 w-8 text-[0] [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6"
+        style="--url: url(./linkedin.svg)"
+        href="https://linkedin.com/in/mahmed-nabil-452383140"
+        target="_blank"
+        rel="me"
+      >
+        linkedin
+      </a>
+      
+      <a
+        class="h-8 w-8 text-[0] [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6"
+        style="--url: url(./rss.svg)"
+        href="https://mahmednabil109.github.io/scratch/index.xml"
+        target="_blank"
+        rel="alternate"
+      >
+        rss
+      </a>
+      
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-10rem)] max-w-3xl px-8 pb-24 pt-16 dark:prose-invert"
+    >
+      
+
+<article>
+  <header class="mb-20">
+    <h1 class="!my-0 pb-2.5">🧪 Smart Pointers (distilled)</h1>
+
+    
+    <div class="text-sm opacity-60">
+      
+      <time>Jul 20, 2023</time>
+      
+      
+      
+      
+    </div>
+    
+  </header>
+
+  <section><h2 id="background">Background</h2>
+<p>Programming mostly in garbage-collected languages (java, python, etc.), there are a lot of things that <em>I</em> took for granted - if <em>I</em> even knew about them -. These things came to hunt me when trying none garbage-collected languages like C++, rust, etc (especially rust). Most of the issues are related to resource management and the main resource that causes problems is <strong>memory</strong>. To avoid such hassle there are patterns developed to safely and efficiently manage memory and other resources. <a href="https://en.cppreference.com/w/cpp/language/raii">Resource Acquisition Is Initialization (RAII)</a> is the pattern to perform just that, it was first introduced in C++ mainly through <strong>&ldquo;smart pointers&rdquo;</strong>, then rust came and adopted this pattern as part of the language.</p>
+<h2 id="problem">Problem</h2>
+<p>When developing an application that is supposed to be running for long periods (e.g. servers), managing different resources is a skill you have to master. Resources are - to some extent of correctness - anything of limited supply like (opened files, allocated memory, sockets, allocated memory, locks, allocated memory, etc.). If you miss even for a tiny bit, you risk leaking resources <em>(holding on to resources that are not used and there is no way to free them)</em>, or even corrupting resources <em>(giving the same resource to two different owners modifying it with no guarding mechanism)</em>. Studying all these kinds of problems, experts found patterns. These kinds of problems happen when <strong>the resource holder and the resource itself outlive each other</strong>. For example, memory leaks happen when the resource (memory) outlives the <code>ptr</code> pointing to it, meaning <code>ptr</code> goes out of scope before freeing/deleting it.</p>
+<p align=center>
+    <img src="/scratch/imgs/mleak.png">
+</p>
+<p>The other problem of corrupting resources happens when the resource holder outlives the resource itself; this problem is hard to visualize in a static image 😓. But let&rsquo;s consider this case, you are having a resource holder <code>x_holder</code> for some resource <code>x</code>. Let&rsquo;s say that this <code>x_holder</code> is shared across threads and one of the threads by mistake frees <code>x</code> through its shared <code>x_holder</code> - without knowing that there might be other threads using it -. At this point in time, there are all possible scenarios of bad undefined behavior, one of these scenarios could be that after the other thread frees <code>x</code> then the runtime - being the code that is supposed to manage the resource, not necessarily part of the developed application colud be the allocator when the resource is memory - assigned the same resource <code>x</code> to another part of the code to use it, <strong>but</strong> the very first thread is still have holder <code>x_holder</code> to that resource <code>x</code> meaning that this thread and the newest holder of the resource - apparently they don&rsquo;t know of each other - will continue corrupting the state of each other 🫨.</p>
+<h2 id="raii">RAII</h2>
+<p>So after seeing that the root of all these problems is that the resource holder and the resource itself could have different lifetimes - one can outlive the other. Naturally, the fix follows, we need to tighten these two lifetimes to each other making it impossible - or as hard as possible - to have a resource holder that points to a freed resource or a resource allocated with no resource holder. The <a href="https://en.cppreference.com/w/cpp/language/raii">RAII</a> principle satisfies that. It stands for <em>Resource Acquisition Is Initialization</em> - simply put - you only acquire a resource by initializing some object and the resource will be freed automatically when this object dies. In the following sections, we will take a look at two smart pointers that deploy the RAII principles: <code>unique_pointer</code>, and <code>shared_pointer</code>.</p>
+<p>To see the benefits of using such pointers, I will present an oversimplified running example to get a good grasp of how these pointers enforce the RAII principles. The following is a simple struct containing an integer and prints to the standard output whenever an instance is created or deleted.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Object</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> _a;
+</span></span><span style="display:flex;"><span>        Object(<span style="color:#66d9ef">int</span> a)<span style="color:#f92672">:</span> _a(a) {
+</span></span><span style="display:flex;"><span>            std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;created&#34;</span> <span style="color:#f92672">&lt;&lt;</span> a <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">~</span>Object(){
+</span></span><span style="display:flex;"><span>            std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;dead &#34;</span> <span style="color:#f92672">&lt;&lt;</span> _a <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span> }
+</span></span></code></pre></div><h3 id="unique_ptr"><code>unique_ptr</code></h3>
+<p>the simplest way to create an Object ptr is to use the <code>new</code> function and after that use the pointer and pass it around, the following example shows that:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>   Object<span style="color:#f92672">*</span> ptr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Object(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>   std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;ptr -&gt; &#34;</span> <span style="color:#f92672">&lt;&lt;</span> (ptr<span style="color:#f92672">-&gt;</span>_a) <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// oops
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>if we ran the previous snippet of code, we shall get</p>
+<pre tabindex="0"><code>created 1
+ptr -&gt; 1
+</code></pre><p>You probably noticed that we are missing the deallocation part, the destructor is never called. when using such manually managed memory languages you should take the burden of following all the execution paths and make sure that the allocated memory is freed/deleted at the end of each and every execution path - that also applies in cases where exceptions may fire. This two-line code as simple as it is represents the general case of memory leaks, and as we pointed, there should be <code>delete ptr</code> at the end of the function.</p>
+<p>Here comes smart pointers for the rescue especially the <code>unique_ptr</code>. This pointer - as its name implies - ensures that there is exactly one owner of the memory. you might ask what is it good for? well, with this kind of semantics we - the authors of the smart pointers - can add some magic code within the smart pointers to automatically free/delete the memory to make the code safe against memory leaks, we can do that as the pointer owns the memory so it takes the responsibility to free it without the need for developers to remember to do that. we will see how they are able to do that in the following paragraphs. The next benefit of this pointer is that if you need to pass this pointer around, it isn&rsquo;t copiable you will need to explicitly transfer the ownership of the pointer to the next owner using the <code>std::move</code> function. This also makes the code proof against memory corruption as there will never be a pointer to freed memory <em>(dangling pointer)</em>, the following example - stuffed with printing - will show how <code>unique_ptr</code> works.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">other_func</span>(unique_ptr<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> ptr) {
+</span></span><span style="display:flex;"><span>   std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;ptr -&gt; &#34;</span> <span style="color:#f92672">&lt;&lt;</span> ptr<span style="color:#f92672">-&gt;</span> a <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>   unique_ptr<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> ptr <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>make_unique<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span>(<span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>   std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;ptr -&gt; &#34;</span> <span style="color:#f92672">&lt;&lt;</span> ptr<span style="color:#f92672">-&gt;</span>_a <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>   std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;before other_func&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// other_func(ptr) will result in a compilation error, no copy constructor
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>   other_func(std<span style="color:#f92672">::</span>move(ptr));
+</span></span><span style="display:flex;"><span>   std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;after other_func&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>If we ran the previous code we shall get the following:</p>
+<pre tabindex="0"><code>created 2
+ptr -&gt; 2
+before other_func
+ptr -&gt; 2
+dead 2
+after other_func
+</code></pre><p>Take your time tracing the code, but the important thing to notice here is that the object destructor is called before returning from the <code>other_func</code> call, but why?
+The reason is very simple as we transferred the ownership of the memory to that function it takes the responsibility to free the resources when it is finished which is great. One more thing, the <code>ptr</code> in the main function becomes invalid after calling <code>move</code> because it no longer owns the memory so it shouldn&rsquo;t be able access it.</p>
+<h3 id="shared_ptr"><code>shared_ptr</code></h3>
+<p>If you are new to the concept of ownership, you might now say: &ldquo;what if I want to just share the pointer safely?&rdquo; Here comes the next smart pointer <code>shared_ptr</code> to the scene. Shared pointers use reference counting to share and deallocate memory safely - much like how Python works <em>effectively</em> - it stores a counter of how many current owners of the underlying memory and only deallocates that memory whenever the counter reaches <strong>zero</strong>. The following example hopefully will show how this ptr works:</p>
+<p align=center>
+    <img src="/scratch/imgs/shared_ptr.png">
+</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">other_func</span>(shared_ptr<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> ptr){
+</span></span><span style="display:flex;"><span>   std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;ptr -&gt; &#34;</span> <span style="color:#f92672">&lt;&lt;</span> ptr<span style="color:#f92672">-&gt;</span>a <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>   shared_ptr<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> ptr <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>make_shared<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span>(<span style="color:#ae81ff">3</span>);
+</span></span><span style="display:flex;"><span>   std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;ptr -&gt; &#34;</span> <span style="color:#f92672">&lt;&lt;</span> ptr<span style="color:#f92672">-&gt;</span>_a <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>   std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;before other_func&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>   other_func(ptr);
+</span></span><span style="display:flex;"><span>   std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;after other_func&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>If we ran that code, we shall get:</p>
+<pre tabindex="0"><code>created 3
+ptr -&gt; 3
+before other_func
+ptr -&gt; 3
+after other_func
+dead 3
+</code></pre><p>Also, you should take your time tracing the code, but the important thing to notice here is that the destructor is only called at the end of the <code>main</code> function; at first, the reference counter is <code>1</code> and it got incremented when it&rsquo;s copied <code>other_func(ptr)</code> so when the other_func is finished the counter was <code>2</code> and it decrements it to be <code>1</code> again without any other effect, then at the end of the main function the counter is decremented again reaching <code>0</code> so the smart pointer deallocates it by calling <code>delete</code> - which calles the destructor, as the reference counter implies that there aren&rsquo;t any owners of this memory thus it&rsquo;s not needed.</p>
+<h2 id="tldr">TL;DR</h2>
+<p>These pointers are also <a href="https://en.wikipedia.org/wiki/Exception_safety">exception-safe</a>. If any exception is thrown after declaring the pointer, the data will not be leaked and the pointer will handle it correctly - i.e. deallocating the memory in case of <code>unique_ptr</code> and decrementing the counter in case of <code>shared_ptr</code>. If anyone wonders how they are doing that, the essence of the mechanism is quite simple. You should notice that these pointers itself are allocated on the stack, whenever we exit a scope block (e.g. a function) there is a designated code that clears the stack frame.
+Clearning that stack frame includes calling the destructor of said pointers, so they can delete the underlying data in their destructors or modified shared metadata that helps keep accessing such raw pointers valid (e.g. ref-counter in case of <code>shared_ptr</code>).</p>
+<p>Here comes another simple example - yay 🎉 - showing the result of compiling the following function into assembly. Materializing the concept of stack frames - you might have encountered it in some computer organization course - you will see that the compiler adds two snippets of code at the begging and end of the function allocating memory for arguments and return variables and cleaning after the functions ends. The interesting part here is that you should notice a call to the destructor of the <code>unique_ptr</code> which we haven&rsquo;t explicitly invoked.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">some_func</span>() {
+</span></span><span style="display:flex;"><span>    unique_ptr<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> ptr <span style="color:#f92672">=</span> make_unique<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span>(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span> }
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#a6e22e">some_func</span>():
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">;; INITING THE STACK FRAME
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>   <span style="color:#a6e22e">push</span>    <span style="color:#66d9ef">rbp</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">mov</span>     <span style="color:#66d9ef">rbp</span>, <span style="color:#66d9ef">rsp</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">sub</span>     <span style="color:#66d9ef">rsp</span>, <span style="color:#ae81ff">16</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">;;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">;; function body 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>   <span style="color:#a6e22e">mov</span>     <span style="color:#66d9ef">DWORD</span> <span style="color:#66d9ef">PTR</span> [<span style="color:#66d9ef">rbp-4</span>], <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">lea</span>     <span style="color:#66d9ef">rax</span>, [<span style="color:#66d9ef">rbp-16</span>]
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">lea</span>     <span style="color:#66d9ef">rdx</span>, [<span style="color:#66d9ef">rbp-4</span>]
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">mov</span>     <span style="color:#66d9ef">rsi</span>, <span style="color:#66d9ef">rdx</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">mov</span>     <span style="color:#66d9ef">rdi</span>, <span style="color:#66d9ef">rax</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">call</span>    <span style="color:#66d9ef">std</span>::<span style="color:#66d9ef">make_unique</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">;;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">;; CLEANING UP STACK FRAME
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>   <span style="color:#a6e22e">lea</span>     <span style="color:#66d9ef">rax</span>, [<span style="color:#66d9ef">rbp-16</span>]
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">mov</span>     <span style="color:#66d9ef">rdi</span>, <span style="color:#66d9ef">rax</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">call</span>    <span style="color:#66d9ef">std</span>::<span style="color:#66d9ef">unique_ptr</span>::<span style="color:#960050;">~</span><span style="color:#66d9ef">unique_ptr</span>() <span style="color:#75715e">;; NOTE: destructor is called automatically
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>   <span style="color:#a6e22e">leave</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">ret</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">;;
+</span></span></span></code></pre></div><p>Establishing that the destructor will be called automatically regardless of how the execution of the function&rsquo;s body goes, the features of the smart pointers could seem now reasonable and quite simple to achieve. In the case of the <code>unique_pointer</code> we know for sure that there will be no other part of the code that can have a valid pointer to the same chunk of memory so we can safely call <code>delete _ptr</code> to free the memory. In the case of <code>shared_ptr</code> - knowing that the destructor will be called - we can atomically decrement the reference counter, and whenever the counter reaches zero we can call safely delete the memory.</p>
+</section>
+
+  
+  
+
+  
+  
+  
+  <nav class="mt-24 flex rounded-lg bg-black/[3%] text-lg dark:bg-white/[8%]">
+    
+    
+    <a
+      class="ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 no-underline hover:bg-black/[2%] dark:hover:bg-white/[3%]"
+      href="https://mahmednabil109.github.io/scratch/posts/distributed-fb/"
+      ><span>🕸️ Facebook 2.0</span><span class="ml-1.5">→</span></a
+    >
+    
+  </nav>
+  
+
+  
+  
+
+  
+  
+</article>
+
+
+    </main>
+
+    <footer
+  class="opaco mx-auto flex h-[5rem] max-w-3xl items-center px-8 text-[0.9em] opacity-60"
+>
+  <div class="mr-auto">
+    &copy; 2023
+    <a class="link" href="https://mahmednabil109.github.io/scratch/">Scratch</a>
+  </div>
+  <a class="link mx-6" href="https://gohugo.io/" rel="noopener" target="_blank"
+    >Powered by Hugo️️</a
+  >️
+  <a
+    class="link"
+    href="https://github.com/nanxiaobei/hugo-paper"
+    rel="noopener"
+    target="_blank"
+    >Theme Paper</a
+  >
+</footer>
+
+  </body>
+</html>
